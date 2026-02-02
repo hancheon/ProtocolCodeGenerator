@@ -1,0 +1,15 @@
+header {
+	...
+}
+
+enum {
+	...
+}
+
+struct {
+	...
+}
+
+message {
+	...
+}
