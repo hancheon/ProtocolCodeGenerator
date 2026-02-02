@@ -1,0 +1,107 @@
+header {
+	CODE : BYTE,
+	SIZE : BYTE,
+	ID : BYTE,
+}
+
+enum MOVE_DIR {
+	PT_MOVE_DIR_LL,
+	PT_MOVE_DIR_LU,
+	PT_MOVE_DIR_UU,
+	PT_MOVE_DIR_RU,
+	PT_MOVE_DIR_RR,
+	PT_MOVE_DIR_RD,
+	PT_MOVE_DIR_DD,
+	PT_MOVE_DIR_LD,
+}
+
+message SC_CREATE_MY_CHARACTER {
+	USER_ID : UINT
+	DIR : BYTE
+	X : short
+	Y :	short
+	HP : CHAR
+}
+
+message SC_CREATE_OTHER_CHARACTER {
+	USER_ID : UINT
+	DIR : BYTE
+	X : short
+	Y :	short
+	HP : CHAR
+}
+
+message SC_DELETE_CHARACTER {
+	USER_ID : UINT
+}
+
+message CS_MOVE_START {
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message SC_MOVE_START {
+	USER_ID : UINT
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message CS_MOVE_STOP {
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message SC_MOVE_STOP {
+	USER_ID : UINT
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message CS_ATTACK1 {
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message SC_ATTACK1 {
+	USER_ID : UINT
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message CS_ATTACK2 {
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message SC_ATTACK2 {
+	USER_ID : UINT
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message CS_ATTACK3 {
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message SC_ATTACK3 {
+	USER_ID : UINT
+	DIR : BYTE
+	X : short
+	Y :	short
+}
+
+message SC_DAMAGE {
+	ATTACKER_ID : UINT
+	DAMAGE_ID : UINT
+	DAMAGE_HP : CHAR
+}

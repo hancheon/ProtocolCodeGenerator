@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.IO;
+
 namespace ProtocolCodeGenerator
 {
     internal class MakePacket : MakeFile
@@ -15,12 +17,21 @@ namespace ProtocolCodeGenerator
         private string packet_;
         private string message_;
         private List<string> packetTypes_ = new List<string>();
+        protected override string FileName => "Packet.h";
 
         protected override string? Parse(string file)
         {
             int packetCount = 0;
             bool isStruct = false;
             bool isMessage = false;
+
+            // 헤더 처리
+            if (file != null) {
+                file = file.Replace("header", "struct PacketHeader");
+            }
+
+            // C++
+            packet_ = "#pragma once\n#include \"stdafx.h\"\n\n";
 
             using (StringReader reader = new StringReader(file)) {
                 string line;
@@ -51,22 +62,23 @@ namespace ProtocolCodeGenerator
                             message_ += (line + "\n");
                             continue;
                         }
-                        else if (isStruct) {
-                            line = line.Replace(",", ";");
-                        }
                     }
 
+                    if (isMessage) continue;
                     packet_ += (line + "\n");
                 }
             }
 
             // PacketType Enum 생성
-            packet_ += "enum PacketType {"; // TODO: :int64 추가
+            packet_ = packet_.TrimEnd('\n');
+            packet_ += "\n\nenum PacketType : __int64 {"; // TODO: C#버전은 Int64
             for (int cnt = 0; cnt < packetCount; cnt++) {
                 string packetNum = (cnt + startNum).ToString();
                 packet_ += "\n\t/*" + packetNum + "*/\tE_" + packetTypes_[cnt] + " = " + packetNum + ",";
             }
             packet_ += "\n}";
+
+            file = message_;
 
             return packet_;
         }

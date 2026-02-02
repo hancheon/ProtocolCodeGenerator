@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ProtocolCodeGenerator
 {
-    internal class MakeFile
+    internal abstract class MakeFile
     {
         public MakeFile() { }
+
+        protected abstract string FileName { get; }
 
         public void Make(string file, string outFileName)
         {
@@ -22,10 +24,12 @@ namespace ProtocolCodeGenerator
 
         private void WriteFile(string parseStr, string outFileName)
         {
-            FileStream fs = new FileStream(outFileName, FileMode.Create);
-            StreamWriter writer = new StreamWriter(fs);
-            writer.Write(parseStr);
-            writer.Close();
+            string fullPath = Path.Combine(outFileName, this.FileName);
+            FileStream fs = new FileStream(fullPath, FileMode.Create);
+            using (StreamWriter writer = new StreamWriter(fs)) {
+                writer.Write(parseStr);
+            }
+            Console.WriteLine("# " + this.FileName + " 생성 완료\n");
         }
     }
 }
