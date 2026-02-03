@@ -8,8 +8,6 @@ namespace ProtocolCodeGenerator
 {
     internal abstract class MakeFile
     {
-        public MakeFile() { }
-
         protected abstract string FileName { get; }
 
         public void Make(string file, string outFileName)
@@ -22,14 +20,18 @@ namespace ProtocolCodeGenerator
             return null;
         }
 
-        private void WriteFile(string parseStr, string outFileName)
+        private void WriteFile(string? parseStr, string outFileName)
         {
+            if (parseStr == null) {
+                Console.WriteLine("! [Error]: " + this.FileName + " Parse Error\n");
+            }
+
             string fullPath = Path.Combine(outFileName, this.FileName);
             FileStream fs = new FileStream(fullPath, FileMode.Create);
             using (StreamWriter writer = new StreamWriter(fs)) {
                 writer.Write(parseStr);
             }
-            Console.WriteLine("# " + this.FileName + " 생성 완료\n");
+            Console.WriteLine("# [Success]: " + this.FileName + " 생성 완료\n");
         }
     }
 }
