@@ -16,7 +16,7 @@ enum MOVE_DIR {
 }
 
 message SC_CREATE_MY_CHARACTER {
-	USER_ID : UINT
+	USER_ID : UINT32
 	DIR : BYTE
 	X : short
 	Y :	short
@@ -24,7 +24,7 @@ message SC_CREATE_MY_CHARACTER {
 }
 
 message SC_CREATE_OTHER_CHARACTER {
-	USER_ID : UINT
+	USER_ID : UINT32
 	DIR : BYTE
 	X : short
 	Y :	short
@@ -32,7 +32,7 @@ message SC_CREATE_OTHER_CHARACTER {
 }
 
 message SC_DELETE_CHARACTER {
-	USER_ID : UINT
+	USER_ID : UINT32
 }
 
 message CS_MOVE_START {
@@ -42,7 +42,7 @@ message CS_MOVE_START {
 }
 
 message SC_MOVE_START {
-	USER_ID : UINT
+	USER_ID : UINT32
 	DIR : BYTE
 	X : short
 	Y :	short
@@ -55,7 +55,7 @@ message CS_MOVE_STOP {
 }
 
 message SC_MOVE_STOP {
-	USER_ID : UINT
+	USER_ID : UINT32
 	DIR : BYTE
 	X : short
 	Y :	short
@@ -68,7 +68,7 @@ message CS_ATTACK1 {
 }
 
 message SC_ATTACK1 {
-	USER_ID : UINT
+	USER_ID : UINT32
 	DIR : BYTE
 	X : short
 	Y :	short
@@ -81,7 +81,7 @@ message CS_ATTACK2 {
 }
 
 message SC_ATTACK2 {
-	USER_ID : UINT
+	USER_ID : UINT32
 	DIR : BYTE
 	X : short
 	Y :	short
@@ -94,14 +94,14 @@ message CS_ATTACK3 {
 }
 
 message SC_ATTACK3 {
-	USER_ID : UINT
+	USER_ID : UINT32
 	DIR : BYTE
 	X : short
 	Y :	short
 }
 
 message SC_DAMAGE {
-	ATTACKER_ID : UINT
-	DAMAGE_ID : UINT
+	ATTACKER_ID : UINT32
+	DAMAGE_ID : UINT32
 	DAMAGE_HP : CHAR
 }
