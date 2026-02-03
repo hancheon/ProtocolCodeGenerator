@@ -11,32 +11,31 @@ namespace ProtocolCodeGenerator
 {
     internal class IDLHandler
     {
-        private string convertFile_;
-        private string protocolFile_;
-        private bool CPP = true;
+        private string convert_ = "";
+        private string protocol_ = "";
 
-        public string ReadFile(string filePath, bool fileType)
+        public string ReadFile(string filePath, FileType fileType)
         {
             using (StreamReader reader = new StreamReader(filePath)) {
-                protocolFile_ = reader.ReadToEnd(); // 한번에 파일 다 읽어오기
+                protocol_ = reader.ReadToEnd(); // 한번에 파일 다 읽어오기
             }
 
-            return this.ConvertType(protocolFile_);
+            return this.ConvertType(protocol_, fileType);
         }
 
-        public string ConvertType(string filePath)
+        public string ConvertType(string filePath, FileType fileType)
         {
             bool isEnum = false;
             string[] delimeters = { "\t", ":", ",", " " };
-            using (StringReader reader = new StringReader(protocolFile_)) {
-                string line;
+            using (StringReader reader = new StringReader(protocol_)) {
+                string? line;
                 while ((line = reader.ReadLine()) != null) {
                     if (line.StartsWith("enum")) {
                         isEnum = true;
                     }
                     else if (line.StartsWith("\t")) {
                         if (isEnum) {
-                            convertFile_ += (line + "\n");
+                            convert_ += (line + "\n");
                             continue;
                         }
 
@@ -48,31 +47,34 @@ namespace ProtocolCodeGenerator
                                 member[1] = "char";
                                 break;
                             case "BYTE":
-                                member[1] = (CPP ? "unsigned char" : "byte");
+                                member[1] = (fileType == FileType.CPP ? "unsigned char" : "byte");
                                 break;
                             case "SHORT":
                                 member[1] = "short";
                                 break;
                             case "WORD":
-                                member[1] = (CPP ? "unsigned short" : "ushort");
+                                member[1] = (fileType == FileType.CPP ? "unsigned short" : "ushort");
                                 break;
                             case "INT32":
-                                member[1] = (CPP ? "__int32" : "int");
+                                member[1] = (fileType == FileType.CPP ? "__int32" : "int");
                                 break;
                             case "UINT32":
-                                member[1] = (CPP ? "unsigned __int32" : "uint");
+                                member[1] = (fileType == FileType.CPP ? "unsigned __int32" : "uint");
                                 break;
                             case "LONG":
                                 member[1] = "long";
                                 break;
                             case "DWORD":
-                                member[1] = (CPP ? "unsigned long" : "long");
+                                member[1] = (fileType == FileType.CPP ? "unsigned long" : "long");
                                 break;
                             case "INT64":
-                                member[1] = (CPP ? "__int64" : "Int64");
+                                member[1] = (fileType == FileType.CPP ? "__int64" : "Int64");
                                 break;
                             case "UINT64":
-                                member[1] = (CPP ? "unsigned __int64" : "UInt64");
+                                member[1] = (fileType == FileType.CPP ? "unsigned __int64" : "UInt64");
+                                break;
+                            case "string":
+                                member[1] = (fileType == FileType.CPP ? "std::string" : "string");
                                 break;
                         }
 
@@ -82,11 +84,11 @@ namespace ProtocolCodeGenerator
                         if (isEnum) isEnum = false;
                     }
 
-                    convertFile_ += (line + "\n");
+                    convert_ += (line + "\n");
                 }
             }
 
-            return convertFile_;
+            return convert_;
         }
     }
 }
