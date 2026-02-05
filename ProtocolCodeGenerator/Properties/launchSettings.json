@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ProtocolCodeGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "CPP C:\\Users\\Hancheon\\Desktop\\TCPFighter\\TCPFighter_SelectServer\\TCPFighter_SelectServer\\Network\\Packet\\Protocol.txt C:\\Users\\Hancheon\\Desktop\\TCPFighter\\TCPFighter_SelectServer\\TCPFighter_SelectServer\\Network\\Packet\\"
+    }
+  }
+}

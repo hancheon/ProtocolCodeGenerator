@@ -12,9 +12,6 @@ namespace ProtocolCodeGenerator
         private string CPPInfo_ = "#pragma once\n\n#include \"stdafx.h\"\n#include \"PacketDefine.h\"\n#include \"Stream.h\"\n\n";
         protected override string FileName => "PacketStream.h";
 
-        // Parsing Variables
-        private string class_ = "";
-
         protected override string? Parse(string file)
         {
             string type = "public:\n\tPacketType type() { return E_";
@@ -22,7 +19,7 @@ namespace ProtocolCodeGenerator
             string decode = "\n\tvoid decode(Stream& stream) {\n\t\tstream";
             file = file.Replace("message", "class");
 
-            class_ = (
+            string stream = (
                 CPPInfo_ +
                 "class Packet\n{\npublic:\n\tvirtual PacketType type() = 0;" +
                 "\n\tvirtual void encode(Stream& stream) { };" +
@@ -34,17 +31,17 @@ namespace ProtocolCodeGenerator
                 int varCnt = 0;
                 string[] delimeters = { " ", ";" };
                 List<string> vars = new List<string>();
-                string line;
+                string? line;
                 while ((line = reader.ReadLine()) != null) {
                     if (line.StartsWith("class")) {
                         string[] className = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                        class_ += className[0] + " PT_" + className[1] + " : public Packet\n{\n";
-                        class_ += (type + className[1] + "; }\n\n");
+                        stream += className[0] + " PT_" + className[1] + " : public Packet\n{\n";
+                        stream += (type + className[1] + "; }\n\n");
                         isClass = true;
                     }
                     else if (line.StartsWith("\t")) {
                         if (isClass) {
-                            class_ += (line + "\n");
+                            stream += (line + "\n");
                             string[] split = line.Split(delimeters, StringSplitOptions.RemoveEmptyEntries);
                             vars.Add(split[split.Length - 1]);
                             varCnt++;
@@ -53,18 +50,18 @@ namespace ProtocolCodeGenerator
                     else if (line.StartsWith("}")) {
                         if (isClass) {
                             // encode
-                            class_ += encode;
+                            stream += encode;
                             for (int cnt = 0; cnt < varCnt; cnt++) {
-                                class_ += (" << " + vars[cnt]);
+                                stream += (" << " + vars[cnt]);
                             }
-                            class_ += ";\n\t}\n";
+                            stream += ";\n\t}\n";
 
                             // decode
-                            class_ += decode;
+                            stream += decode;
                             for (int cnt = 0; cnt < varCnt; cnt++) {
-                                class_ += (" >> " + vars[cnt]);
+                                stream += (" >> " + vars[cnt]);
                             }
-                            class_ += ";\n\t}\n};\n\n";
+                            stream += ";\n\t}\n};\n\n";
 
                             vars.Clear();
                             varCnt = 0;
@@ -74,7 +71,7 @@ namespace ProtocolCodeGenerator
                 }
             }
 
-            return class_;
+            return stream;
         }
     }
 }

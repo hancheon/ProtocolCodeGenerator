@@ -11,23 +11,22 @@ namespace ProtocolCodeGenerator
 {
     internal class IDLHandler
     {
-        private string convert_ = "";
-        private string protocol_ = "";
-
         public string ReadFile(string filePath, FileType fileType)
         {
+            string protocol;
             using (StreamReader reader = new StreamReader(filePath)) {
-                protocol_ = reader.ReadToEnd(); // 한번에 파일 다 읽어오기
+                protocol = reader.ReadToEnd();
             }
 
-            return this.ConvertType(protocol_, fileType);
+            return this.ConvertType(protocol, fileType);
         }
 
-        public string ConvertType(string filePath, FileType fileType)
+        public string ConvertType(string protocol, FileType fileType)
         {
+            string convert = "";
             bool isEnum = false;
             string[] delimeters = { "\t", ":", ",", " " };
-            using (StringReader reader = new StringReader(protocol_)) {
+            using (StringReader reader = new StringReader(protocol)) {
                 string? line;
                 while ((line = reader.ReadLine()) != null) {
                     if (line.StartsWith("enum")) {
@@ -35,7 +34,7 @@ namespace ProtocolCodeGenerator
                     }
                     else if (line.StartsWith("\t")) {
                         if (isEnum) {
-                            convert_ += (line + "\n");
+                            convert += (line + "\n");
                             continue;
                         }
 
@@ -84,11 +83,11 @@ namespace ProtocolCodeGenerator
                         if (isEnum) isEnum = false;
                     }
 
-                    convert_ += (line + "\n");
+                    convert += (line + "\n");
                 }
             }
 
-            return convert_;
+            return convert;
         }
     }
 }

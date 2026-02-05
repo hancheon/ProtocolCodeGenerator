@@ -8,11 +8,24 @@ namespace ProtocolCodeGenerator
     {
         static void Main(string[] args)
         {
-            // TODO: 실행방법 -> 프로그램명 옵션(C++/C#) -I [프로토콜 파일 위치] -O [저장될 위치]
-            FileType fileType = FileType.CPP; // TODO: CPP / CS 옵션
-            // TODO: 입력으로 받은 프로토콜 파일 위치
-            string protocolPath = "C:\\Users\\Hancheon\\Desktop\\ProtocolCodeGenerator\\ProtocolCodeGenerator\\Protocol.txt";
-            string outFilePath = "C:\\Users\\Hancheon\\Desktop\\test";
+            if (args.Length < 3) {
+                Console.WriteLine("! [Error]: 프로그램을 실행하기 위한 인수가 부족합니다.\n");
+                return;
+            }
+
+            FileType fileType;
+            if (args[0].Equals("CPP") || args[0].Equals("cpp")) {
+                fileType = FileType.CPP;
+            } else if (args[0].Equals("CS") || args[0].Equals("cs")) {
+                fileType = FileType.CS;
+            }
+            else {
+                Console.WriteLine("! [Error]: 프로그램을 실행하기 위한 인수가 부족합니다.\n");
+                return;
+            }
+
+            string protocolPath = args[1];
+            string outFilePath = args[2];
 
             if (protocolPath == null) {
                 Console.WriteLine("! [Error]: 프로토콜 파일 경로 오류\n");
@@ -37,7 +50,6 @@ namespace ProtocolCodeGenerator
                 // PacketStream.h 생성
                 MakePacketStream_CPP packetStreamCPP = new MakePacketStream_CPP();
                 packetStreamCPP.Make(convert, outFilePath);
-
 
                 // PacketFactory.h 생성
                 MakePacketFactory_CPP packetFactoryCPP = new MakePacketFactory_CPP();

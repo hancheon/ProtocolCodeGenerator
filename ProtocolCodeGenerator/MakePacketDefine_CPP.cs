@@ -15,71 +15,57 @@ namespace ProtocolCodeGenerator
     {
         // OutFile Info
         private int startNum_ = 1000; // TODO: 사용자가 시작 번호 설정하도록 바꿀꺼임
-        private string CPPInfo_ = "#pragma once\n\n#include \"stdafx.h\"\n\n";
+        private string CPPInfo_ = "#pragma once\n\n#include \"stdafx.h\"\n#pragma pack(push, 1)\n\n";
         protected override string FileName => "PacketDefine.h";
-
-        // Parsing Variables
-        private string packet_;
-        private string message_;
-        private List<string> packetTypes_ = new List<string>();
 
         protected override string? Parse(string file)
         {
-            int packetCount = 0;
+            file = file.Replace("header", "struct PacketHeader");
+            string packet = CPPInfo_;
+
             bool isStruct = false;
             bool isMessage = false;
-
-            file = file.Replace("header", "struct PacketHeader");
-            packet_ = CPPInfo_;
+            int packetCount = 0;
+            List<string> packetTypes = new List<string>();
 
             using (StringReader reader = new StringReader(file)) {
-                string line;
+                string? line;
                 while ((line = reader.ReadLine()) != null) {
                     if (line.StartsWith("struct")) {
                         isStruct = true;
                     }
                     else if (line.StartsWith("message")) {
                         isMessage = true;
-                        message_ += (line + "\n");
-                        packetTypes_.Add(line.Split(" ", StringSplitOptions.RemoveEmptyEntries)[1]);
+                        packetTypes.Add(line.Split(" ", StringSplitOptions.RemoveEmptyEntries)[1]);
                         packetCount++;
                         continue;
                     }
                     else if (line.StartsWith("}")) {
                         if (isMessage) {
-                            message_ += (line + ";\n");
                             isMessage = false;
                             continue;
                         }
                         else if (isStruct) {
-                            line = line.Replace("}", "};");
                             isStruct = false;
                         }
-                    }
-                    else if (line.StartsWith("\t")) {
-                        if (isMessage) {
-                            message_ += (line + "\n");
-                            continue;
-                        }
+                        line = line.Replace("}", "};");
                     }
 
                     if (isMessage) continue;
-                    packet_ += (line + "\n");
+                    packet += (line + "\n");
                 }
             }
 
             // PacketType Enum 생성
-            packet_ = packet_.TrimEnd('\n');
-            packet_ += "\n\nenum PacketType : __int64 {";
+            packet = packet.TrimEnd('\n');
+            packet += "\n\nenum PacketType : __int32 {";
             for (int cnt = 0; cnt < packetCount; cnt++) {
                 string packetNum = (cnt + startNum_).ToString();
-                packet_ += "\n\t/*" + packetNum + "*/\tE_" + packetTypes_[cnt] + " = " + packetNum + ",";
+                packet += "\n\t/*" + packetNum + "*/\tE_" + packetTypes[cnt] + " = " + packetNum + ",";
             }
-            packet_ += "\n}";
+            packet += "\n};\n\n#pragma pack(pop)";
 
-            file = message_;
-
-            return packet_;
+            return packet;
         }
     }
 }
