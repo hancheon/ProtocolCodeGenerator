@@ -1,7 +1,7 @@
 header {
-	CODE : BYTE,
-	SIZE : BYTE,
-	TYPE : BYTE,
+	APP_CODE : BYTE,
+	PACKET_SIZE : BYTE,
+	PACKET_TYPE : BYTE,
 }
 
 enum MOVE_DIR {
