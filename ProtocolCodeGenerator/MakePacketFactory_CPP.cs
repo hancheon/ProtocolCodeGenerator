@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,10 +15,25 @@ namespace ProtocolCodeGenerator
 
         protected override string? Parse(string file)
         {
-            string factory = (
+            string type = "__int32";
+
+            using (StringReader reader = new StringReader(file)) {
+                string? line;
+                while ((line = reader.ReadLine()) != null) {
+                    if (line.Contains("PACKET_TYPE")) {
+                        string[] packetType = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                        if (packetType.Length == 2)
+                            type = packetType[0].Trim();
+                        else if (packetType.Length == 3)
+                            type = packetType[0].Trim() + " " + packetType[1];
+                    }
+                }
+            }
+
+                string factory = (
                 CPPInfo_ +
                 "class PacketFactory : public Singleton<PacketFactory>\n{\npublic:\n\t" +
-                "Packet* getPacket(__int64 packetType)\n\t{\n\t\tswitch (packetType) {\n"
+                "Packet* getPacket(" + type + " packetType)\n\t{\n\t\tswitch (packetType) {\n"
                 );
 
             using (StringReader reader = new StringReader(file)) {
