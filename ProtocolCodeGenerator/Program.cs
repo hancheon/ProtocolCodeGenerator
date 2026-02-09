@@ -4,11 +4,12 @@ using static System.Net.Mime.MediaTypeNames;
 namespace ProtocolCodeGenerator
 {
     enum FileType : int { CPP = 0, CS = 1 };
+
     internal class Program
     {
         static void Main(string[] args)
         {
-            if (args.Length < 3) {
+            if (args.Length < 4) {
                 Console.WriteLine("! [Error]: 프로그램을 실행하기 위한 인수가 부족합니다.\n");
                 return;
             }
@@ -37,6 +38,8 @@ namespace ProtocolCodeGenerator
                 return;
             }
 
+            string packetNum = args[3];
+
             Console.WriteLine("# Protocol Code Generator is Running...\n");
 
             IDLHandler idl = new IDLHandler();
@@ -44,7 +47,7 @@ namespace ProtocolCodeGenerator
 
             if (fileType == FileType.CPP) {
                 // PacketDefine.h 생성
-                MakePacketDefine_CPP packetDefineCPP = new MakePacketDefine_CPP();
+                MakePacketDefine_CPP packetDefineCPP = new MakePacketDefine_CPP(packetNum);
                 packetDefineCPP.Make(convert, outFilePath);
 
                 // PacketStream.h 생성

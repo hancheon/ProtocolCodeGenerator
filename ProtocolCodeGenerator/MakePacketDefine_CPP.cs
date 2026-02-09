@@ -14,9 +14,14 @@ namespace ProtocolCodeGenerator
     internal class MakePacketDefine_CPP : MakeFile
     {
         // OutFile Info
-        private int startNum_ = 1000; // TODO: 사용자가 시작 번호 설정하도록 바꿀꺼임
+        private int startNum_ = 1000; // default: 1000
         private string CPPInfo_ = "#pragma once\n\n#include \"stdafx.h\"\n#pragma pack(push, 1)\n\n";
         protected override string FileName => "PacketDefine.h";
+
+        public MakePacketDefine_CPP(string num)
+        {
+            startNum_ = Int32.Parse(num);
+        }
 
         protected override string? Parse(string file)
         {
